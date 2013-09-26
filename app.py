@@ -25,7 +25,7 @@ def show_quiz(quiz_id):
 @app.route('/create-user', methods=['POST', 'GET'])
 def create_user():
     data = flask.request.form
-    print data['email']
+    # print data['email']
     return "Returning"
 
 '''
