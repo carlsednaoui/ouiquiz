@@ -5,6 +5,7 @@ at a later date.
 '''
 
 import flask
+import sqlite3
 app = flask.Flask(__name__)
 
 DEBUG = True
@@ -24,9 +25,44 @@ def show_quiz(quiz_id):
 
 @app.route('/create-user', methods=['POST', 'GET'])
 def create_user():
-    data = flask.request.form
-    # print data['email']
-    return "Returning"
+    data = flask.request.json
+    
+    # Save it to DB
+    conn = sqlite3.connect('database.db')
+    conn.cursor().execute("INSERT INTO users VALUES (?, ?)", [data['email'], data['password']])
+    conn.commit()
+    conn.close()
+
+    # Call log_in fn
+    return flask.jsonify(data)
+
+@app.route('/users')
+def list_users():
+  users = []
+
+  conn = sqlite3.connect('database.db')
+  db_response = conn.cursor().execute("SELECT email FROM users")
+  for row in db_response:
+    users.append(row)
+  conn.close()
+  
+  return flask.jsonify({"result": users})
+
+def log_in(email, password):
+  # Given an email and a password
+  # Make sure the user exists
+  # Make sure password is correct
+  # Return user ID and create session cookie
+  pass
+
+'''
+To debug:
+import ipdb
+ipdb.set_trace()
+'''
+
+# To create DB
+# sqlite3 database.db < schema.sql
 
 '''
 Use curl to post data and capture it in the create_user fn.
