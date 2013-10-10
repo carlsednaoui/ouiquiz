@@ -6,13 +6,11 @@ at a later date.
 
 import flask
 import sqlite3
+import md5
 app = flask.Flask(__name__)
 
 DEBUG = True
 app.config.from_object(__name__)
-
-def create_quiz(user_id):
-    pass
 
 def create_question(quiz_id):
     pass
@@ -26,15 +24,19 @@ def show_quiz(quiz_id):
 @app.route('/create-user', methods=['POST', 'GET'])
 def create_user():
     data = flask.request.json
-    
+    m = md5.new()
+
+    m.update(data['password'])
+    hashed_password = m.hexdigest()
+
     # Save it to DB
     conn = sqlite3.connect('database.db')
-    conn.cursor().execute("INSERT INTO users VALUES (?, ?)", [data['email'], data['password']])
+    conn.cursor().execute("INSERT INTO users VALUES (?, ?)", [data['email'], hashed_password])
     conn.commit()
     conn.close()
 
     # Call log_in fn
-    return flask.jsonify(data)
+    return flask.jsonify({'email': data['email'], 'password': hashed_password})
 
 @app.route('/users')
 def list_users():
@@ -46,14 +48,33 @@ def list_users():
     users.append(row)
   conn.close()
   
-  return flask.jsonify({"result": users})
+  return flask.jsonify({'result': users})
 
-def log_in(email, password):
-  # Given an email and a password
-  # Make sure the user exists
-  # Make sure password is correct
+@app.route('/login', methods=['POST'])
+def log_in():
+  data = flask.request.json
+
+  email = data['email']
+  hashed_password = md5.new(data['password']).hexdigest()
+
+  conn = sqlite3.connect('database.db')
+  db_response = conn.cursor().execute("SELECT email FROM users WHERE email = ? AND password = ?", [email, hashed_password])
+
+  if len(db_response.fetchall()) == 1:
+    conn.close()
+    return flask.jsonify({'response': 'yes!'})
+  else:
+    conn.close()
+    return flask.jsonify({'response': 'go away!'})
+
   # Return user ID and create session cookie
-  pass
+
+# @app.route('/create-quiz', methods=['POST'])
+# def create_quiz(user_id):
+#     conn = sqlite3.connect('database.db')
+
+# Look into relational database stuff in the curriculum
+
 
 '''
 To debug:
