@@ -85,6 +85,14 @@ ipdb.set_trace()
 # To create DB
 # sqlite3 database.db < schema.sql
 
+# To get quiz title with a user's email
+# SELECT title FROM quizzes WHERE user_id = (SELECT id FROM users WHERE email = "carltest2@example.com");
+
+# SELECT title FROM questions WHERE quiz_id = (SELECT quiz_id FROM quizzes WHERE user_id = (SELECT user_id FROM users WHERE email = "carl_1@example.com"));
+
+# Crazy magic
+#SELECT users.email, quizzes.title, questions.title FROM users, quizzes, questions WHERE users.email = "carl_1@example.com" AND users.id = quizzes.user_id AND questions.id = questions.quiz_id;
+
 '''
 Use curl to post data and capture it in the create_user fn.
 Once you get the data, do something!
