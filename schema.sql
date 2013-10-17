@@ -42,3 +42,4 @@ insert INTO questions ("quiz_id", "title") VALUES (2, "Question 1 for quiz 2");
 
 -- Write some more queries!!
 -- Get all the quizzes for a given user
+-- look for a sqlite graphical tool?
