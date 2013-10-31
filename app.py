@@ -93,6 +93,11 @@ ipdb.set_trace()
 # Crazy magic
 #SELECT users.email, quizzes.title, questions.title FROM users, quizzes, questions WHERE users.email = "carl_1@example.com" AND users.id = quizzes.user_id AND questions.id = questions.quiz_id;
 
+
+# SELECT users.email, quizzes.id FROM users, quizzes WHERE users.id = quizzes.user_id AND users.id = 1;
+
+# SELECT quizzes.title, questions.title, users.email FROM quizzes, questions, users WHERE questions.quiz_id = quizzes.id AND quizzes.user_id = users.id AND quizzes.id = 1;
+
 '''
 Use curl to post data and capture it in the create_user fn.
 Once you get the data, do something!
