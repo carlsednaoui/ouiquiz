@@ -1,0 +1,14 @@
+SELECT i.Total, il.UnitPrice, t.Name, t.Composer FROM Invoice i, InvoiceLine il, Track t WHERE i.InvoiceId = 400 AND i.InvoiceId = il.InvoiceId AND il.TrackId = t.TrackId;
+
+When using aggregate functions, you need to use group by
+
+select count(il.InvoiceLineId), i.Total, i.InvoiceId from InvoiceLine il, Invoice i where i.InvoiceId=il.InvoiceId group by il.InvoiceId;
+
+SELECT count(il.InvoiceLineId), i.Total, i.InvoiceId FROM InvoiceLine il, Invoice i WHERE i.InvoiceId=il.InvoiceId GROUP BY il.InvoiceId LIMIT 5;
+
+
+SELECT count(*) FROM (select count(il.InvoiceLineId), i.Total, i.InvoiceId from InvoiceLine il, Invoice i where i.InvoiceId=il.InvoiceId group by il.InvoiceId);
+
+
+-- average number of line items per invoice
+select avg(num_items) from (select count(il.InvoiceLineId) as num_items, i.Total as total, i.InvoiceId as id from InvoiceLine il, Invoice i where i.InvoiceId=il.InvoiceId group by i.InvoiceId order by i.InvoiceId);
