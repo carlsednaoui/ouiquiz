@@ -69,44 +69,19 @@ def log_in():
 
   # Return user ID and create session cookie
 
-# @app.route('/create-quiz', methods=['POST'])
-# def create_quiz(user_id):
-#     conn = sqlite3.connect('database.db')
+@app.route('/create-quiz', methods=['POST'])
+def create_quiz():
+  """
+  Requires user_id, title
+  """
+  data = flask.request.json
+  conn = sqlite3.connect('database.db')
+  conn.cursor().execute("INSERT INTO quizzes ('user_id', 'title') VALUES (?, ?)", [data['user_id'], data['title']])
+  conn.commit()
+  conn.close()
 
-# Look into relational database stuff in the curriculum
+  return flask.jsonify({'user_id': data['user_id'], 'title': data['title']})
 
-
-'''
-To debug:
-import ipdb
-ipdb.set_trace()
-'''
-
-# To create DB
-# sqlite3 database.db < schema.sql
-
-# To get quiz title with a user's email
-# SELECT title FROM quizzes WHERE user_id = (SELECT id FROM users WHERE email = "carltest2@example.com");
-
-# SELECT title FROM questions WHERE quiz_id = (SELECT quiz_id FROM quizzes WHERE user_id = (SELECT user_id FROM users WHERE email = "carl_1@example.com"));
-
-# Crazy magic
-#SELECT users.email, quizzes.title, questions.title FROM users, quizzes, questions WHERE users.email = "carl_1@example.com" AND users.id = quizzes.user_id AND questions.id = questions.quiz_id;
-
-
-# SELECT users.email, quizzes.id FROM users, quizzes WHERE users.id = quizzes.user_id AND users.id = 1;
-
-# SELECT quizzes.title, questions.title, users.email FROM quizzes, questions, users WHERE questions.quiz_id = quizzes.id AND quizzes.user_id = users.id AND quizzes.id = 1;
-
-'''
-Use curl to post data and capture it in the create_user fn.
-Once you get the data, do something!
-
-What tool do you need to parse the JSON from the post?
-
-Do you use request.form, request.json or request.data?
-Figure out which one to use when.
-'''
 
 if __name__ == '__main__':
     app.debug = True
