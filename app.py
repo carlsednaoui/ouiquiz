@@ -82,6 +82,18 @@ def create_quiz():
 
   return flask.jsonify({'user_id': data['user_id'], 'title': data['title']})
 
+@app.route('/quizzes')
+def get_quizzes():
+  quizzes = []
+
+  conn = sqlite3.connect('database.db')
+  db_response = conn.cursor().execute("SELECT title FROM quizzes")
+  for row in db_response:
+    quizzes.append(row)
+  conn.close()
+
+  return flask.jsonify({'result': quizzes})
+
 
 if __name__ == '__main__':
     app.debug = True
