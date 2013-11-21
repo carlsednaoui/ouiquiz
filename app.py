@@ -72,16 +72,16 @@ def log_in():
 @app.route('/create-quiz', methods=['POST'])
 def create_quiz():
   """
-  Requires user_id, title
-  TODO: We should be able to pass in an email and then this function finds the user_id in the DB
+  Requires email, title
   """
   data = flask.request.json
   conn = sqlite3.connect('database.db')
-  conn.cursor().execute("INSERT INTO quizzes ('user_id', 'title') VALUES (?, ?)", [data['user_id'], data['title']])
+  user_id = conn.cursor().execute("SELECT id FROM users WHERE email = ?", [data['email']])
+  conn.cursor().execute("INSERT INTO quizzes ('user_id', 'title') VALUES (?, ?)", [str(user_id), data['title']])
   conn.commit()
   conn.close()
 
-  return flask.jsonify({'user_id': data['user_id'], 'title': data['title']})
+  return flask.jsonify({'email': data['email'], 'title': data['title']})
 
 @app.route('/quizzes')
 def get_quizzes():
