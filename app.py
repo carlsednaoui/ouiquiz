@@ -7,19 +7,12 @@ at a later date.
 import flask
 import sqlite3
 import md5
+from models import User, Quiz, Question, Session
+
 app = flask.Flask(__name__)
 
 DEBUG = True
 app.config.from_object(__name__)
-
-def create_question(quiz_id):
-    pass
-
-def create_answer(question_id):
-    pass
-
-def show_quiz(quiz_id):
-    pass
 
 @app.route('/create-user', methods=['POST', 'GET'])
 def create_user():
@@ -29,11 +22,16 @@ def create_user():
     m.update(data['password'])
     hashed_password = m.hexdigest()
 
-    # Save it to DB
-    conn = sqlite3.connect('database.db')
-    conn.cursor().execute("INSERT INTO users VALUES (?, ?)", [data['email'], hashed_password])
-    conn.commit()
-    conn.close()
+    # # Save it to DB
+    # conn = sqlite3.connect('database.db')
+    # conn.cursor().execute("INSERT INTO users VALUES (?, ?)", [data['email'], hashed_password])
+    # conn.commit()
+    # conn.close()
+
+    s = Session()
+    user = User(email = data['email'], password = hashed_password)
+    s.add(user)
+    s.commit()
 
     # Call log_in fn
     return flask.jsonify({'email': data['email'], 'password': hashed_password})
